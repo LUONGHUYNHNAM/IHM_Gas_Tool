@@ -1,5 +1,5 @@
 import React from 'react';
-import { OperatingConditions } from '../utils/types';
+import { OperatingConditions, SUPPORTED_UNITS } from '../utils/types';
 
 interface InputFormProps {
   conditions: OperatingConditions;
@@ -7,26 +7,6 @@ interface InputFormProps {
 }
 
 const InputForm: React.FC<InputFormProps> = ({ conditions, onConditionsChange }) => {
-  const availableInputUnits = [
-    'mol/mol : mole fraction',
-    'µmol/mol : micro mole fraction',
-    'mmol/mol : milli mole fraction',
-    'ppm : parts per million',
-    'ppb : parts per billion',
-    'ppt : parts per trillion'
-  ];
-
-  const availableOutputUnits = [
-    'mol/mol : mole fraction',
-    'µmol/mol : micro mole fraction',
-    'mmol/mol : milli mole fraction',
-    'm3/m3 : volume fraction',
-    'ppm : parts per million',
-    'ppb : parts per billion',
-    'ppt : parts per trillion',
-    'mg/m3 : mass concentration'
-  ];
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div>
@@ -40,6 +20,8 @@ const InputForm: React.FC<InputFormProps> = ({ conditions, onConditionsChange })
           onChange={(e) => onConditionsChange({ temperature: parseFloat(e.target.value) })}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
           step="0.1"
+          min="-273.15"
+          max="1000"
         />
       </div>
       
@@ -54,6 +36,8 @@ const InputForm: React.FC<InputFormProps> = ({ conditions, onConditionsChange })
           onChange={(e) => onConditionsChange({ pressure: parseFloat(e.target.value) })}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
           step="0.01"
+          min="0.001"
+          max="1000"
         />
       </div>
       
@@ -67,7 +51,7 @@ const InputForm: React.FC<InputFormProps> = ({ conditions, onConditionsChange })
           onChange={(e) => onConditionsChange({ inputUnit: e.target.value })}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
-          {availableInputUnits.map((unit) => (
+          {SUPPORTED_UNITS.INPUT.map((unit) => (
             <option key={unit} value={unit}>
               {unit}
             </option>
@@ -85,11 +69,28 @@ const InputForm: React.FC<InputFormProps> = ({ conditions, onConditionsChange })
           onChange={(e) => onConditionsChange({ outputUnit: e.target.value })}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
-          {availableOutputUnits.map((unit) => (
+          {SUPPORTED_UNITS.OUTPUT.map((unit) => (
             <option key={unit} value={unit}>
               {unit}
             </option>
           ))}
+        </select>
+      </div>
+
+      <div>
+        <label htmlFor="balanceGas" className="block text-sm font-medium text-gray-700 mb-1">
+          Balance Gas
+        </label>
+        <select
+          id="balanceGas"
+          value={conditions.balanceGas || 'N2'}
+          onChange={(e) => onConditionsChange({ balanceGas: e.target.value })}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        >
+          <option value="N2">N2 - Nitrogen</option>
+          <option value="Ar">Ar - Argon</option>
+          <option value="He">He - Helium</option>
+          <option value="Air">Air</option>
         </select>
       </div>
     </div>
